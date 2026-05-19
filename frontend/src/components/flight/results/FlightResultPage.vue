@@ -14,6 +14,15 @@
       </aside>
 
       <section class="results-content">
+        <div v-if="loading" class="search-loader-card">
+          <div class="search-loader-spinner"></div>
+          <div>
+            <h3>Searching best fares...</h3>
+            <p>
+              Please wait while we apply markup, commission and discount rules.
+            </p>
+          </div>
+        </div>
         <FlightResultsHeader :flights="flights" />
 
         <FlightSortBar :flights="flights" />

@@ -1,98 +1,77 @@
 <template>
-  <div class="airport-box">
-    <div class="airport-code">
-      {{ code || "---" }}
-    </div>
-
-    <div class="airport-info">
-      <label>{{ label }}</label>
-
-      <input
-        v-model="searchText"
-        :placeholder="placeholder"
-        @focus="openDropdown"
-        @input="handleInput"
-      />
-
-      <small>{{ selectedText }}</small>
-    </div>
-
-    <div v-if="open" class="airport-dropdown">
-      <button
-        v-for="city in cities"
-        :key="city.id || city.code + city.name"
-        type="button"
-        class="airport-item"
-        @mousedown.prevent="selectCity(city)"
-      >
-        <strong>{{ city.code }}</strong>
-
+  <el-select
+    v-model="selected"
+    filterable
+    remote
+    reserve-keyword
+    clearable
+    :placeholder="placeholder"
+    :remote-method="searchAirports"
+    :loading="loading"
+    class="airport-el-select"
+    @change="selectAirport"
+  >
+    <el-option
+      v-for="item in airports"
+      :key="item.code + item.name"
+      :label="`${item.code} - ${item.city}, ${item.country}`"
+      :value="item.code"
+    >
+      <div class="airport-option">
+        <strong>{{ item.code }}</strong>
         <span>
-          {{ city.city }}, {{ city.country }}
-          <small>{{ city.airport }}</small>
+          {{ item.city }}, {{ item.country }}
+          <small>{{ item.airport }}</small>
         </span>
-      </button>
-
-      <div v-if="!cities.length" class="airport-empty">No airports found</div>
-    </div>
-  </div>
+      </div>
+    </el-option>
+  </el-select>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { api } from "../../services/api";
 
 const props = defineProps({
-  label: String,
-  code: String,
-  name: String,
   placeholder: String,
 });
 
-const emit = defineEmits(["update:code", "update:name"]);
+const emit = defineEmits(["select"]);
 
-const open = ref(false);
-const searchText = ref("");
-const cities = ref([]);
-let timer = null;
+const selected = ref("");
+const loading = ref(false);
+const airports = ref([]);
 
-const selectedText = computed(() => props.name || "");
+async function searchAirports(query) {
+  if (!query) {
+    airports.value = [];
+    return;
+  }
 
-async function openDropdown() {
-  open.value = true;
-  await fetchCities(searchText.value || props.code || "dh");
+  loading.value = true;
+
+  try {
+    const { data } = await api.get("/cities", {
+      params: { input: query },
+    });
+
+    airports.value = normalizeCities(data);
+  } finally {
+    loading.value = false;
+  }
 }
 
-function handleInput() {
-  clearTimeout(timer);
-
-  timer = setTimeout(() => {
-    fetchCities(searchText.value || "dh");
-  }, 300);
-}
-
-async function fetchCities(keyword) {
-  const { data } = await api.get("/cities", {
-    params: { input: keyword },
-  });
-
-  cities.value = normalizeCities(data);
-}
 function normalizeCities(data) {
-  const list = Array.isArray(data) ? data : data?.data || data?.Data || [];
+  const list = Array.isArray(data) ? data : data?.data || [];
 
   return list
     .map((item) => {
-      // Format 1: { AirportCode, SearchString }
       if (item.AirportCode && item.SearchString) {
-        const [airport = "", city = "", country = ""] = String(
-          item.SearchString,
-        )
-          .split(",")
-          .map((x) => x.trim());
+        const [airport = "", city = "", country = ""] = item.SearchString.split(
+          ",",
+        ).map((x) => x.trim());
 
         return {
-          id: item.ID,
           code: item.AirportCode,
           airport,
           city: city || airport,
@@ -101,46 +80,22 @@ function normalizeCities(data) {
         };
       }
 
-      // Format 2: { Code, Name, Country }
       return {
-        id: item.ID || item.Code,
-        code: item.Code || item.code || "",
-        airport: item.Name || item.name || "",
-        city: item.Name || item.name || "",
-        country: item.Country || item.country || "",
-        name: `${item.Name || item.name}, ${item.Country || item.country}`,
-      };
-    })
-    .filter((x) => x.code && x.city);
-}
-function normalizeCities_m(data) {
-  const list = Array.isArray(data) ? data : data?.data || data?.Data || [];
-
-  return list
-    .map((item) => {
-      const [airport = "", city = "", country = ""] = String(
-        item.SearchString || "",
-      )
-        .split(",")
-        .map((x) => x.trim());
-
-      return {
-        id: item.ID,
-        code: item.AirportCode,
-        airport,
-        city: city || airport,
-        country,
-        name: item.SearchString,
+        code: item.Code,
+        airport: item.Name,
+        city: item.Name,
+        country: item.Country,
+        name: `${item.Name}, ${item.Country}`,
       };
     })
     .filter((x) => x.code);
 }
 
-function selectCity(city) {
-  emit("update:code", city.code);
-  emit("update:name", city.name);
+function selectAirport(code) {
+  const airport = airports.value.find((x) => x.code === code);
 
-  searchText.value = city.city;
-  open.value = false;
+  if (!airport) return;
+
+  emit("select", airport);
 }
 </script>

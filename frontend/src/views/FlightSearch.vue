@@ -64,6 +64,7 @@ function updateForm(payload) {
     ...payload,
   };
 }
+
 async function filterFlights(filterPayload) {
   try {
     loading.value = true;
@@ -78,17 +79,26 @@ async function filterFlights(filterPayload) {
     loading.value = false;
   }
 }
-async function search() {
+async function search(payload) {
+  const requestPayload = {
+    ...form.value,
+    ...(payload || {}),
+  };
+
+  form.value = requestPayload;
+
   try {
     loading.value = true;
     error.value = "";
+
+    // IMPORTANT: this opens result page/component
     hasSearched.value = true;
 
-    const { data } = await api.post("/flights/search", form.value);
-
+    const { data } = await api.post("/flights/search", requestPayload);
     flights.value = data.flights || [];
     filter.value = data.filter || { airline_code: [] };
   } catch (err) {
+    console.log(err);
     error.value = err.response?.data?.message || "Flight search failed";
   } finally {
     loading.value = false;

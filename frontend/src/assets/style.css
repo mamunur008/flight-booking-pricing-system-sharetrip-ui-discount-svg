@@ -198,18 +198,6 @@ a {
 }
 
 /* SEARCH GRID */
-.search-grid {
-  display: grid;
-  grid-template-columns:
-    minmax(220px, 1.2fr)
-    44px
-    minmax(220px, 1.2fr)
-    minmax(190px, 1fr)
-    minmax(190px, 1fr)
-    70px;
-  gap: 14px;
-  align-items: stretch;
-}
 
 /* AIRPORT */
 
@@ -1508,4 +1496,137 @@ th {
 .airport-empty {
   padding: 16px;
   color: #64748b;
+}
+.airport-loading {
+  padding: 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.airport-spinner {
+  width: 18px;
+  height: 18px;
+  border: 2px solid #dbeafe;
+  border-top: 2px solid #1882ff;
+  border-radius: 50%;
+  animation: airportSpin 0.8s linear infinite;
+}
+
+@keyframes airportSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.airport-el-select {
+  width: 100%;
+}
+
+.airport-option {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.airport-option strong {
+  color: #1882ff;
+  min-width: 46px;
+}
+
+.airport-option span {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.airport-option small {
+  color: #64748b;
+}
+.search-grid {
+  display: grid;
+  grid-template-columns:
+    minmax(260px, 1fr)
+    44px
+    minmax(260px, 1fr)
+    minmax(360px, 1.1fr)
+    86px;
+  gap: 16px;
+  align-items: center;
+}
+
+.flight-date-range {
+  width: 100% !important;
+  height: 54px;
+}
+
+.flight-single-date {
+  width: 100% !important;
+  height: 54px;
+}
+
+.search-btn {
+  width: 76px;
+  min-width: 76px;
+  height: 64px;
+  border: 0;
+  border-radius: 10px;
+  background: #f58200;
+  color: #fff;
+  display: grid;
+  place-items: center;
+  align-self: center;
+  font-size: 0;
+}
+
+.search-btn::before {
+  content: "🔍";
+  font-size: 34px;
+  line-height: 1;
+}
+
+.search-btn:hover {
+  background: #e87400;
+}
+
+.search-loader-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 34px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  box-shadow: 0 2px 7px rgba(148, 163, 184, 0.45);
+  margin-bottom: 18px;
+}
+
+.search-loader-card h3 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  color: #0f172a;
+}
+
+.search-loader-card p {
+  margin: 0;
+  color: #64748b;
+}
+
+.search-loader-spinner {
+  width: 42px;
+  height: 42px;
+  border: 4px solid #dbeafe;
+  border-top-color: #1882ff;
+  border-radius: 50%;
+  animation: searchSpin 0.8s linear infinite;
+}
+
+@keyframes searchSpin {
+  to {
+    transform: rotate(360deg);
+  }
 }

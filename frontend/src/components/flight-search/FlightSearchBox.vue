@@ -34,30 +34,55 @@
     </div>
 
     <div class="search-grid">
-      <AirportSelector
-        label="From"
-        v-model:code="localForm.Origin"
-        v-model:name="originName"
-        placeholder="Dhaka"
-      />
+      <AirportSelect :placeholder="originLabel" @select="selectOrigin" />
 
       <button class="swap-btn" type="button" @click="swapAirports">⇄</button>
 
-      <AirportSelector
-        label="To"
-        v-model:code="localForm.Destination"
-        v-model:name="destinationName"
-        placeholder="Cox's Bazar"
+      <AirportSelect
+        :placeholder="destinationLabel"
+        @select="selectDestination"
       />
 
-      <DateRangePicker
+      <el-date-picker
+        v-if="localForm.JourneyType === 1"
+        v-model="localForm.DepartureDate"
+        type="date"
+        placeholder="Departure"
+        format="DD MMM YYYY"
+        value-format="YYYY-MM-DD"
+        class="flight-single-date"
+        @change="onSingleDateChange"
+      />
+
+      <el-date-picker
+        v-else
+        v-model="dateRange"
+        type="daterange"
+        range-separator="To"
+        start-placeholder="Departure"
+        end-placeholder="Return"
+        format="DD MMM YYYY"
+        value-format="YYYY-MM-DD"
+        class="flight-date-range"
+        @change="onDateRangeChange"
+      />
+
+      <button class="search-btn" type="button" @click="submitSearch"></button>
+
+      <!-- <button
+        class="search-btn"
+        type="button"
+        @click="$emit('search')"
+      ></button> -->
+
+      <!-- <DateRangePicker
         :range="localForm.JourneyType === 2"
         v-model:startDate="localForm.DepartureDate"
         v-model:endDate="localForm.ReturnDate"
         start-label="Departure"
         end-label="Return"
         @change="emitChange"
-      />
+      /> -->
 
       <!-- <DateField
         label="Departure"
@@ -71,8 +96,8 @@
         v-model="localForm.ReturnDate"
         @change="emitChange"
       /> -->
-
-      <button class="search-btn" @click="$emit('search')">🔍</button>
+      <!-- 
+      <button class="search-btn" @click="$emit('search')">🔍</button> -->
     </div>
 
     <div class="fare-types">
@@ -95,9 +120,9 @@
 </template>
 
 <script setup>
+import { ElMessage } from "element-plus";
 import { reactive, ref, watch } from "vue";
-import DateRangePicker from "../common/DateRangePicker.vue";
-import AirportSelector from "./AirportSelector.vue";
+import AirportSelect from "../flight-search/AirportSelector.vue";
 
 const props = defineProps({
   form: {
@@ -106,25 +131,118 @@ const props = defineProps({
   },
 });
 
+const localForm = reactive({ ...props.form });
+const dateRange = ref([localForm.DepartureDate, localForm.ReturnDate]);
+
+watch(
+  () => [localForm.DepartureDate, localForm.ReturnDate],
+  () => {
+    if (localForm.JourneyType === 2) {
+      dateRange.value = [localForm.DepartureDate, localForm.ReturnDate];
+    }
+  },
+);
+
 const emit = defineEmits(["update:form", "search"]);
 
-const localForm = reactive({ ...props.form });
+const originLabel = ref("DAC - Dhaka, Bangladesh");
+const destinationLabel = ref("CXB - Cox's Bazar, Bangladesh");
 
 const originName = ref("Dhaka, Bangladesh, Hazrat Shahjalal Intl");
 const destinationName = ref("Cox's Bazar, Bangladesh, Cox's Bazar Airport");
 
-watch(
-  () => props.form,
-  (value) => {
-    Object.assign(localForm, value);
-  },
-  { deep: true },
-);
+function disablePastDate(date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  return date < today;
+}
+
+function onSingleDateChange(value) {
+  localForm.DepartureDate = value;
+  localForm.ReturnDate = "";
+  emitChange();
+}
+
+function selectOrigin(airport) {
+  localForm.Origin = airport.code;
+  originLabel.value = `${airport.code} - ${airport.city}, ${airport.country}`;
+
+  emitChange();
+}
+
+function selectDestination(airport) {
+  localForm.Destination = airport.code;
+  destinationLabel.value = `${airport.code} - ${airport.city}, ${airport.country}`;
+
+  emitChange();
+}
+
+function onDateRangeChange(value) {
+  const startDate = value?.[0] || "";
+  const returnDate = value?.[1] || "";
+
+  if (startDate && returnDate && startDate > returnDate) {
+    ElMessage.error("Departure date cannot be greater than return date");
+    return;
+  }
+
+  localForm.DepartureDate = startDate;
+  localForm.ReturnDate = returnDate;
+
+  dateRange.value = [startDate, returnDate];
+
+  emitChange();
+}
+
+function setJourneyType(type) {
+  localForm.JourneyType = type;
+
+  if (type === 1) {
+    localForm.ReturnDate = "";
+    dateRange.value = [localForm.DepartureDate, ""];
+  }
+
+  if (type === 2) {
+    if (
+      !localForm.ReturnDate ||
+      localForm.ReturnDate < localForm.DepartureDate
+    ) {
+      const nextDay = new Date(localForm.DepartureDate);
+      nextDay.setDate(nextDay.getDate() + 1);
+
+      localForm.ReturnDate = nextDay.toISOString().slice(0, 10);
+    }
+
+    dateRange.value = [localForm.DepartureDate, localForm.ReturnDate];
+  }
+
+  emitChange();
+}
+function submitSearch_old() {
+  emitChange();
+
+  emit("search", { ...localForm });
+}
+function emitChange_old() {
+  emit("update:form", {
+    ...localForm,
+    DepartureDate: localForm.DepartureDate,
+    ReturnDate: localForm.ReturnDate,
+  });
+}
 
 function emitChange() {
   emit("update:form", { ...localForm });
 }
 
+function submitSearch() {
+  const payload = { ...localForm };
+
+  emit("update:form", payload);
+  emit("search", payload);
+}
+/*
 function setJourneyType(type) {
   localForm.JourneyType = type;
 
@@ -133,7 +251,7 @@ function setJourneyType(type) {
   }
 
   emitChange();
-}
+} */
 
 function swapAirports() {
   const origin = localForm.Origin;
