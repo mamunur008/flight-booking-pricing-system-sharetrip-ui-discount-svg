@@ -1,6 +1,8 @@
 <template>
   <div class="airport-box">
-    <div class="airport-code">{{ code }}</div>
+    <div class="airport-code">
+      {{ code || "---" }}
+    </div>
 
     <div class="airport-info">
       <label>{{ label }}</label>
@@ -8,31 +10,36 @@
       <input
         v-model="searchText"
         :placeholder="placeholder"
-        @input="searchCities"
-        @focus="open = true"
+        @focus="openDropdown"
+        @input="handleInput"
       />
 
-      <small>{{ name }}</small>
+      <small>{{ selectedText }}</small>
     </div>
 
-    <div v-if="open && cities.length" class="airport-dropdown">
+    <div v-if="open" class="airport-dropdown">
       <button
         v-for="city in cities"
-        :key="city.Code || city.code || city.CityCode"
+        :key="city.id || city.code + city.name"
         type="button"
-        @click="selectCity(city)"
+        class="airport-item"
+        @mousedown.prevent="selectCity(city)"
       >
-        <strong>{{ city.Code || city.code || city.CityCode }}</strong>
+        <strong>{{ city.code }}</strong>
+
         <span>
-          {{ city.Name || city.name || city.CityName || city.AirportName }}
+          {{ city.city }}, {{ city.country }}
+          <small>{{ city.airport }}</small>
         </span>
       </button>
+
+      <div v-if="!cities.length" class="airport-empty">No airports found</div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { api } from "../../services/api";
 
 const props = defineProps({
@@ -44,41 +51,96 @@ const props = defineProps({
 
 const emit = defineEmits(["update:code", "update:name"]);
 
+const open = ref(false);
 const searchText = ref("");
 const cities = ref([]);
-const open = ref(false);
 let timer = null;
 
-async function searchCities() {
+const selectedText = computed(() => props.name || "");
+
+async function openDropdown() {
+  open.value = true;
+  await fetchCities(searchText.value || props.code || "dh");
+}
+
+function handleInput() {
   clearTimeout(timer);
 
-  timer = setTimeout(async () => {
-    if (!searchText.value || searchText.value.length < 2) {
-      cities.value = [];
-      return;
-    }
+  timer = setTimeout(() => {
+    fetchCities(searchText.value || "dh");
+  }, 300);
+}
 
-    const { data } = await api.get(`/cities?input=${searchText.value}`);
+async function fetchCities(keyword) {
+  const { data } = await api.get("/cities", {
+    params: { input: keyword },
+  });
 
-    cities.value = Array.isArray(data) ? data : data.data || [];
-    open.value = true;
-  }, 400);
+  cities.value = normalizeCities(data);
+}
+function normalizeCities(data) {
+  const list = Array.isArray(data) ? data : data?.data || data?.Data || [];
+
+  return list
+    .map((item) => {
+      // Format 1: { AirportCode, SearchString }
+      if (item.AirportCode && item.SearchString) {
+        const [airport = "", city = "", country = ""] = String(
+          item.SearchString,
+        )
+          .split(",")
+          .map((x) => x.trim());
+
+        return {
+          id: item.ID,
+          code: item.AirportCode,
+          airport,
+          city: city || airport,
+          country,
+          name: item.SearchString,
+        };
+      }
+
+      // Format 2: { Code, Name, Country }
+      return {
+        id: item.ID || item.Code,
+        code: item.Code || item.code || "",
+        airport: item.Name || item.name || "",
+        city: item.Name || item.name || "",
+        country: item.Country || item.country || "",
+        name: `${item.Name || item.name}, ${item.Country || item.country}`,
+      };
+    })
+    .filter((x) => x.code && x.city);
+}
+function normalizeCities_m(data) {
+  const list = Array.isArray(data) ? data : data?.data || data?.Data || [];
+
+  return list
+    .map((item) => {
+      const [airport = "", city = "", country = ""] = String(
+        item.SearchString || "",
+      )
+        .split(",")
+        .map((x) => x.trim());
+
+      return {
+        id: item.ID,
+        code: item.AirportCode,
+        airport,
+        city: city || airport,
+        country,
+        name: item.SearchString,
+      };
+    })
+    .filter((x) => x.code);
 }
 
 function selectCity(city) {
-  const code = city.Code || city.code || city.CityCode || city.IATACode;
-  const name =
-    city.Name ||
-    city.name ||
-    city.CityName ||
-    city.AirportName ||
-    city.CountryName ||
-    "";
+  emit("update:code", city.code);
+  emit("update:name", city.name);
 
-  emit("update:code", code);
-  emit("update:name", name);
-
-  searchText.value = name;
+  searchText.value = city.city;
   open.value = false;
 }
 </script>

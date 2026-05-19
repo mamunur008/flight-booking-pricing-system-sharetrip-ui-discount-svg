@@ -1,15 +1,15 @@
 import { createClient } from "redis";
 
+const redisUrl =
+  process.env.REDIS_URL ||
+  `redis://:${process.env.REDIS_PASSWORD || "foobared"}@${process.env.REDIS_HOST || "redis"}:${process.env.REDIS_PORT || 6379}`;
+
 export const redis = createClient({
-  url:
-    process.env.REDIS_URL ||
-    `redis://:${process.env.REDIS_PASSWORD || "foobared"}@${
-      process.env.REDIS_HOST || "127.0.0.1"
-    }:${process.env.REDIS_PORT || 6379}`,
+  url: redisUrl,
 });
 
-redis.on("error", (e) => {
-  console.error("[redis]", e.message);
+redis.on("error", (error) => {
+  console.error("[redis]", error.message);
 });
 
 redis.on("connect", () => {

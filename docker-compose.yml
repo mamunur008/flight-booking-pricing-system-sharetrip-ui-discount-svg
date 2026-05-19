@@ -41,7 +41,7 @@ services:
     environment:
       PORT: 5000
       NODE_ENV: development
-      JWT_SECRET: super_interview_secret_change_me
+      JWT_SECRET: super_interview_secret_mamun
       MYSQL_HOST: mysql
       MYSQL_PORT: 3306
       MYSQL_DATABASE: flight_booking

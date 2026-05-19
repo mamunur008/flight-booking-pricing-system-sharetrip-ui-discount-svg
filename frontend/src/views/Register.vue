@@ -1,10 +1,13 @@
 <template>
   <main class="auth-page">
     <section class="auth-card">
-      <h1>Please Sign in</h1>
-      <p>You need to sign in first to continue</p>
+      <h1>Let’s Get Started</h1>
+      <p>Create an account to continue</p>
 
-      <form @submit.prevent="login">
+      <form @submit.prevent="register">
+        <label>Name</label>
+        <input v-model="form.name" class="auth-input" placeholder="Your name" />
+
         <label>Email</label>
         <input
           v-model="form.email"
@@ -20,16 +23,12 @@
           placeholder="Your password"
         />
 
-        <RouterLink class="forgot-link" to="/forgot-password">
-          Forgot Password?
-        </RouterLink>
-
-        <button class="auth-btn">Sign In</button>
+        <button class="auth-btn">Sign Up</button>
       </form>
 
       <p class="auth-link">
-        Don’t have an account?
-        <RouterLink to="/register">Sign Up</RouterLink>
+        Already have an account?
+        <RouterLink to="/login">Sign In</RouterLink>
       </p>
     </section>
   </main>
@@ -43,16 +42,13 @@ import { api } from "../services/api";
 const router = useRouter();
 
 const form = ref({
+  name: "",
   email: "",
   password: "",
 });
 
-async function login() {
-  const { data } = await api.post("/auth/login", form.value);
-
-  localStorage.setItem("token", data.token);
-  localStorage.setItem("user", JSON.stringify(data.user));
-
-  router.push("/");
+async function register() {
+  await api.post("/auth/register", form.value);
+  router.push("/login");
 }
 </script>

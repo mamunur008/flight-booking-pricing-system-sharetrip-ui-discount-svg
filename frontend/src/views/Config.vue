@@ -11,9 +11,13 @@
       </div>
 
       <form class="config-form" @submit.prevent="save">
-        <input
+        <!-- <input
           v-model="cfg.airline_code"
           placeholder="Airline Code or blank for All"
+        /> -->
+        <AirlineAutocomplete
+          v-model:code="cfg.airline_code"
+          v-model:name="cfg.airline_name"
         />
 
         <select v-model="cfg.markup_type">
@@ -94,9 +98,9 @@
 
 <script setup>
 import { onMounted, ref } from "vue";
+import AirlineAutocomplete from "../components/common/AirlineAutocomplete.vue";
 import AppNavbar from "../components/layout/AppNavbar.vue";
 import { api } from "../services/api";
-
 const configs = ref([]);
 const discounts = ref([]);
 
@@ -106,6 +110,8 @@ const cfg = ref({
   markup_value: 8,
   commission_type: "percent",
   commission_value: 3,
+
+  airline_name: "All Airlines",
 });
 
 async function load() {

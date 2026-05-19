@@ -16,18 +16,22 @@
       <small>{{ name }}</small>
     </div>
 
-    <div v-if="open" class="airport-dropdown" @click.stop>
+    <div v-if="open && cities.length" class="airport-dropdown">
       <button
         v-for="city in cities"
         :key="city.code"
+        class="airport-item"
         type="button"
         @click="selectCity(city)"
       >
         <strong>{{ city.code }}</strong>
-        <span>{{ city.name }}</span>
-      </button>
 
-      <div v-if="!cities.length" class="airport-empty">No cities found</div>
+        <span>
+          {{ city.city }}
+
+          <small> {{ city.airport }}, {{ city.country }} </small>
+        </span>
+      </button>
     </div>
   </div>
 </template>
@@ -115,22 +119,34 @@ function normalizeCities(data) {
     : data?.data || data?.Data || data?.result || data?.Result || [];
 
   return list
-    .map((item) => ({
-      code:
+    .map((item) => {
+      const code =
+        item.AirportCode ||
         item.Code ||
         item.code ||
         item.CityCode ||
         item.IATACode ||
-        item.AirportCode ||
-        "",
-      name:
+        "";
+
+      const search =
+        item.SearchString ||
         item.Name ||
         item.name ||
         item.CityName ||
         item.AirportName ||
         item.DisplayName ||
-        "",
-    }))
+        "";
+
+      const parts = search.split(",");
+
+      return {
+        code,
+        city: parts[1] || parts[0] || search,
+        airport: parts[0] || search,
+        country: parts[2] || "",
+        name: search,
+      };
+    })
     .filter((x) => x.code && x.name);
 }
 
