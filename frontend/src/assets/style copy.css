@@ -1,0 +1,501 @@
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  font-family: Inter, Arial, sans-serif;
+  background: #e8eef6;
+  color: #102033;
+}
+button {
+  cursor: pointer;
+}
+.topbar {
+  height: 78px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 52px;
+  box-shadow: 0 2px 10px #cbd5e1;
+}
+.brand {
+  font-weight: 900;
+  color: #1882ff;
+  font-size: 28px;
+}
+.nav a {
+  margin: 0 18px;
+  text-decoration: none;
+  color: #1f2a44;
+  font-weight: 600;
+}
+.loginBtn,
+.primary {
+  background: #1882ff;
+  color: white;
+  border: 0;
+  border-radius: 24px;
+  padding: 13px 26px;
+  font-weight: 800;
+}
+.tripbar {
+  background: #f8fbff;
+  height: 86px;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.page {
+  max-width: 1180px;
+  margin: 24px auto;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+}
+.panel {
+  background: #f8fafc;
+  border-radius: 10px;
+  box-shadow: 0 1px 3px #ccd6e3;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.panel h3 {
+  margin: 0;
+  padding: 17px;
+  border-bottom: 1px solid #d9e2ec;
+}
+.panel-body {
+  padding: 17px;
+}
+.muted {
+  color: #6b7686;
+  font-size: 13px;
+}
+.filter-btn {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.filter-btn button {
+  border: 1px solid #d5e1ef;
+  background: #eef4fa;
+  border-radius: 7px;
+  padding: 11px;
+  color: #405065;
+}
+.result-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+.airline-tabs,
+.sort-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 14px;
+}
+.airline-tabs div,
+.sort-tabs div {
+  padding: 16px;
+  text-align: center;
+  border-right: 1px solid #e7edf5;
+}
+.sort-tabs div:first-child {
+  background: #1882ff;
+  color: white;
+  font-weight: 800;
+}
+.flight-card {
+  background: white;
+  border-radius: 12px;
+  margin: 14px 0;
+  box-shadow: 0 2px 7px #d4deea;
+  overflow: hidden;
+}
+.tag {
+  display: inline-block;
+  background: #18a64a;
+  color: white;
+  font-size: 12px;
+  padding: 7px 20px;
+  clip-path: polygon(0 0, 90% 0, 100% 50%, 90% 100%, 0 100%);
+}
+.flight-main {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 160px;
+  gap: 18px;
+  align-items: center;
+  padding: 20px;
+}
+.logo {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #f72121;
+  color: white;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+}
+.pricebox {
+  background: #edf6ff;
+  border-radius: 10px;
+  text-align: center;
+  padding: 20px;
+}
+.price {
+  font-size: 24px;
+  font-weight: 900;
+}
+.old {
+  text-decoration: line-through;
+  color: #8e98a7;
+}
+.ad {
+  height: 100px;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #111a66, #08134d);
+  color: white;
+  display: grid;
+  place-items: center;
+  font-size: 48px;
+  margin: 14px 0;
+}
+.auth {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #07122b, #0b1220);
+}
+.auth-card {
+  background: white;
+  border-radius: 18px;
+  padding: 32px;
+  width: 420px;
+}
+.field {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d5dde8;
+  border-radius: 10px;
+  margin: 8px 0 14px;
+}
+.svg-page {
+  min-height: 100vh;
+  background: #070816;
+  color: white;
+  display: grid;
+  grid-template-columns: 360px 1fr;
+}
+.svg-side {
+  background: #070818;
+  border-right: 1px solid #2d3145;
+  padding: 24px;
+}
+.svg-canvas {
+  display: grid;
+  place-items: center;
+  background-image:
+    linear-gradient(#111528 1px, transparent 1px),
+    linear-gradient(90deg, #111528 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+.svg-preview {
+  width: 900px;
+  min-height: 230px;
+  box-shadow: 0 0 35px #0bf;
+  border: 1px solid #9ef;
+}
+.download {
+  width: 100%;
+  border: 1px solid #7ff;
+  background: #0b0d1b;
+  color: #8ca2ff;
+  border-radius: 12px;
+  padding: 16px;
+  font-weight: 900;
+}
+.config {
+  max-width: 1000px;
+  margin: 30px auto;
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+}
+.row {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 8px;
+  margin-bottom: 12px;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+td,
+th {
+  border-bottom: 1px solid #e5e7eb;
+  padding: 10px;
+  text-align: left;
+}
+.detail-link {
+  padding: 0 20px 16px;
+  color: #1882ff;
+  text-align: right;
+  font-weight: 800;
+}
+.airline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.brand-button {
+  border: 0;
+  background: transparent;
+}
+.topbar .router-link-active {
+  color: #1882ff;
+}
+.topbar a.loginBtn {
+  text-decoration: none;
+  color: #fff;
+}
+.loading-panel,
+.error-panel {
+  padding: 20px;
+}
+.error-panel {
+  color: #b91c1c;
+}
+.ad b {
+  background: #ff7438;
+  border-radius: 12px;
+  padding: 8px 26px;
+  margin-left: 20px;
+}
+.auth-actions {
+  display: flex;
+  gap: 12px;
+}
+.primary.secondary {
+  background: #1f2937;
+}
+.error-text {
+  color: #b91c1c;
+  font-weight: 700;
+}
+.filter-btn button {
+  cursor: pointer;
+  user-select: none;
+}
+
+.hero {
+  background:
+    linear-gradient(rgba(10, 24, 45, 0.45), rgba(10, 24, 45, 0.65)),
+    url("/airplane-hero.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 70px 0 90px;
+}
+
+.hero-overlay {
+  max-width: 1500px;
+  margin: 0 auto;
+  padding: 0 40px;
+}
+
+.hero-content {
+  color: white;
+  margin-bottom: 40px;
+}
+
+.hero-content h1 {
+  font-size: 48px;
+  margin: 0 0 12px;
+}
+
+.hero-content p {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.search-card {
+  background: white;
+  border-radius: 10px;
+  padding: 40px;
+  box-shadow: 0 25px 60px rgba(15, 23, 42, 0.18);
+}
+
+.trip-types {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.trip-types button,
+.trip-types select {
+  border: 0;
+  background: #edf2f7;
+  padding: 14px 22px;
+  border-radius: 5px;
+  font-weight: 700;
+  color: #334155;
+  cursor: pointer;
+}
+
+.trip-types button.active {
+  background: #1677ff;
+  color: white;
+}
+
+.trip-types button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.right-options {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+}
+
+.search-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 44px 1.2fr 1.2fr 1.2fr 74px;
+  gap: 14px;
+  align-items: stretch;
+}
+
+.airport-box,
+.date-box {
+  position: relative;
+  border: 1px solid #d7e0ea;
+  border-radius: 8px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  background: white;
+}
+
+.airport-code {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  padding-right: 16px;
+  border-right: 1px solid #d7e0ea;
+  margin-right: 16px;
+}
+
+.airport-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.airport-info label,
+.date-box label {
+  display: block;
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.airport-info input,
+.date-box input {
+  width: 100%;
+  border: 0;
+  outline: 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.airport-info small,
+.date-box small {
+  display: block;
+  color: #64748b;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.swap-btn {
+  border-radius: 50%;
+  width: 44px;
+  height: 44px;
+  border: 1px solid #d7e0ea;
+  background: white;
+  align-self: center;
+  cursor: pointer;
+  font-size: 22px;
+}
+
+.search-btn {
+  border: 0;
+  border-radius: 8px;
+  background: #f58200;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.airport-dropdown {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 105%;
+  background: white;
+  border: 1px solid #d7e0ea;
+  border-radius: 8px;
+  box-shadow: 0 15px 40px rgba(15, 23, 42, 0.18);
+  z-index: 20;
+  max-height: 260px;
+  overflow: auto;
+}
+
+.airport-dropdown button {
+  width: 100%;
+  border: 0;
+  background: white;
+  padding: 12px 16px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.airport-dropdown button:hover {
+  background: #eff6ff;
+}
+
+.airport-dropdown strong {
+  margin-right: 12px;
+}
+
+.fare-types {
+  display: flex;
+  gap: 34px;
+  margin-top: 30px;
+  font-weight: 700;
+}
+
+.fare-types input {
+  margin-right: 8px;
+}
+
+@media (max-width: 1100px) {
+  .search-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .right-options {
+    margin-left: 0;
+  }
+
+  .trip-types {
+    flex-wrap: wrap;
+  }
+}

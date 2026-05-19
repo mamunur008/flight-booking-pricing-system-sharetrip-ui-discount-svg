@@ -1,0 +1,305 @@
+.results-page {
+  background: #eef3f8;
+  min-height: 100vh;
+  padding-bottom: 40px;
+}
+
+/* TOP SECTION */
+
+.trip-summary {
+  background: white;
+  border-bottom: 1px solid #dfe7ef;
+  padding: 24px 0;
+}
+
+.trip-summary-inner {
+  width: 1280px;
+  margin: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.trip-summary h2 {
+  font-size: 30px;
+  margin-bottom: 8px;
+  color: #0f172a;
+}
+
+.trip-summary p {
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* MAIN GRID */
+
+.results-layout {
+  width: 1280px;
+  margin: 24px auto;
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* SIDEBAR */
+
+.sidebar {
+  width: 100%;
+}
+
+.panel {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 18px;
+  border: 1px solid #dbe4ee;
+}
+
+.panel-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px;
+  border-bottom: 1px solid #e5edf5;
+}
+
+.panel-title h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 20px;
+  color: #0f172a;
+}
+
+.panel-body {
+  padding: 18px;
+}
+
+.muted {
+  color: #64748b;
+  line-height: 1.5;
+}
+
+.reset-pill {
+  border: 0;
+  background: #1882ff;
+  color: white;
+  border-radius: 16px;
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* RANGE */
+
+.range-wrap {
+  position: relative;
+  height: 40px;
+  margin: 18px 0 12px;
+}
+
+.range-wrap input[type="range"] {
+  position: absolute;
+  width: 100%;
+  top: 8px;
+  accent-color: #1882ff;
+}
+
+.range-wrap input[type="range"]::-webkit-slider-thumb {
+  cursor: pointer;
+}
+
+/* FILTER BUTTONS */
+
+.filter-btn {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.filter-btn button {
+  height: 46px;
+  border-radius: 10px;
+  border: 1px solid #d9e2ec;
+  background: #f8fbff;
+  color: #475569;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.filter-btn button:hover {
+  background: #1882ff;
+  color: white;
+}
+
+/* AIRLINES */
+
+.airline-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.airline-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* RIGHT SIDE */
+
+.results-content {
+  width: 100%;
+}
+
+/* RESULT TOP */
+
+.result-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.result-topbar h2 {
+  font-size: 32px;
+  color: #0f172a;
+}
+
+.result-topbar span {
+  color: #64748b;
+}
+
+/* AIRLINE TABS */
+
+.airline-tabs {
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #dbe4ee;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 18px;
+}
+
+.airline-tab {
+  padding: 18px;
+  border-right: 1px solid #edf2f7;
+  text-align: center;
+}
+
+.airline-tab:last-child {
+  border-right: 0;
+}
+
+/* SORT */
+
+.sort-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  background: white;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #dbe4ee;
+  margin-bottom: 18px;
+}
+
+.sort-tab {
+  padding: 18px;
+  text-align: center;
+  border-right: 1px solid #edf2f7;
+  cursor: pointer;
+}
+
+.sort-tab.active {
+  background: #1882ff;
+  color: white;
+}
+
+/* FLIGHT CARD */
+
+.flight-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid #dbe4ee;
+  margin-bottom: 18px;
+}
+
+.flight-card-body {
+  display: grid;
+  grid-template-columns: 1fr 240px;
+}
+
+.flight-main {
+  padding: 28px;
+}
+
+.flight-price {
+  background: #f6f9fc;
+  border-left: 1px solid #e2e8f0;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+
+.flight-price h2 {
+  font-size: 36px;
+  color: #0f172a;
+}
+
+.select-btn {
+  width: 100%;
+  height: 50px;
+  border-radius: 30px;
+  border: 0;
+  background: #1882ff;
+  color: white;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* AD */
+
+.ad {
+  height: 140px;
+  background: linear-gradient(135deg, #dbeafe, #eff6ff);
+  border-radius: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 38px;
+  color: #0f172a;
+  font-weight: 800;
+  margin-top: 20px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1300px) {
+  .results-layout,
+  .trip-summary-inner {
+    width: calc(100% - 40px);
+  }
+}
+
+@media (max-width: 992px) {
+  .results-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .flight-price {
+    border-left: 0;
+    border-top: 1px solid #e2e8f0;
+  }
+}

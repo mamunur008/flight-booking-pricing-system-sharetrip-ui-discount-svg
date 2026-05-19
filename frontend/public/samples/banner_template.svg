@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="970" height="250" viewBox="0 0 970 250">
+  <rect width="970" height="250" fill="#0d0d0d"/>
+
+  <text x="40" y="100" font-size="40" fill="#ffffff" font-family="Arial" font-weight="bold">
+    {{name}}
+  </text>
+  <text x="40" y="160" font-size="26" fill="#bbbbbb" font-family="Arial">
+    {{title}}
+  </text>
+  <text x="40" y="200" font-size="22" fill="#ffcc00" font-family="Arial">
+    {{description}}
+  </text>
+
+  <rect x="700" y="40" width="220" height="170" fill="#222222" stroke="#555555" stroke-width="2" rx="10"/>
+
+  <text x="810" y="130" font-size="16" fill="#888888" font-family="Arial" text-anchor="middle">
+    {{image}}
+  </text>
+</svg>
