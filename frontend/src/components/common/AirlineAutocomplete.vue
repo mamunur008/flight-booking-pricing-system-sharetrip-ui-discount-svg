@@ -1,114 +1,179 @@
 <template>
-  <div class="autocomplete-wrap">
-    <input
-      v-model="searchText"
-      class="autocomplete-input"
+  <div class="airline-select-wrap">
+    <el-select
+      v-model="selectedValue"
+      filterable
+      remote
+      reserve-keyword
+      clearable
+      :remote-method="searchAirlines"
+      :loading="loading"
       placeholder="Airline Code or blank for All"
-      @focus="openDropdown"
-      @input="filterAirlines"
-    />
+      class="airline-select"
+      @focus="loadAirlines"
+      @change="handleChange"
+    >
+      <el-option label="ALL - All Airlines" value="">
+        <div class="airline-option">
+          <strong>ALL</strong>
+          <span>All Airlines</span>
+        </div>
+      </el-option>
 
-    <div v-if="open" class="autocomplete-dropdown">
-      <button type="button" class="autocomplete-item" @click="selectAll">
-        <strong>ALL</strong>
-        <span>All Airlines</span>
-      </button>
-
-      <button
-        v-for="airline in filteredAirlines"
+      <el-option
+        v-for="airline in airlines"
         :key="airline.code"
-        type="button"
-        class="autocomplete-item"
-        @click="selectAirline(airline)"
+        :label="`${airline.code} - ${airline.name}`"
+        :value="airline.code"
       >
-        <strong>{{ airline.code }}</strong>
-        <span>{{ airline.name }}</span>
-      </button>
+        <div class="airline-option">
+          <strong>{{ airline.code }}</strong>
 
-      <div v-if="!filteredAirlines.length" class="autocomplete-empty">
-        No airlines found
-      </div>
-    </div>
+          <span>{{ airline.name }}</span>
+        </div>
+      </el-option>
+    </el-select>
   </div>
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { api } from "../../services/api";
 
 const emit = defineEmits(["update:code", "update:name"]);
 
-const open = ref(false);
-const searchText = ref("");
+const loading = ref(false);
+
 const airlines = ref([]);
 
-const filteredAirlines = computed(() => {
-  const q = searchText.value.toLowerCase();
+const selectedValue = ref("");
 
-  if (!q) {
-    return airlines.value.slice(0, 100);
+const allAirlines = ref([]);
+
+async function loadAirlines() {
+  if (allAirlines.value.length) return;
+
+  loading.value = true;
+
+  try {
+    // const { data } = await api.get("/airlines");
+    const { data } = await api.get("/airlines", {
+      params: {
+        search: query,
+      },
+    });
+
+    const list = Array.isArray(data) ? data : data.data || data.Data || [];
+
+    allAirlines.value = list
+      .map((item) => ({
+        code:
+          item.Code ||
+          item.code ||
+          item.AirlineCode ||
+          item.airlineCode ||
+          item.IATACode ||
+          "",
+
+        name:
+          item.Name ||
+          item.name ||
+          item.AirlineName ||
+          item.airlineName ||
+          item.DisplayName ||
+          "",
+      }))
+      .filter((x) => x.code && x.name);
+
+    airlines.value = allAirlines.value.slice(0, 100);
+  } catch (err) {
+    console.log(err);
+  } finally {
+    loading.value = false;
+  }
+}
+
+async function searchAirlines(query) {
+  if (!allAirlines.value.length) {
+    await loadAirlines();
   }
 
-  return airlines.value
+  if (!query) {
+    airlines.value = allAirlines.value.slice(0, 100);
+
+    return;
+  }
+
+  const q = query.toLowerCase();
+
+  airlines.value = allAirlines.value
     .filter(
       (x) =>
         x.code.toLowerCase().includes(q) || x.name.toLowerCase().includes(q),
     )
     .slice(0, 100);
-});
+}
 
-async function openDropdown() {
-  open.value = true;
+function handleChange(value) {
+  if (!value) {
+    emit("update:code", "");
+    emit("update:name", "All Airlines");
 
-  if (!airlines.value.length) {
-    await loadAirlines();
+    return;
   }
-}
 
-async function loadAirlines() {
-  const { data } = await api.get("/airlines");
+  const airline = allAirlines.value.find((x) => x.code === value);
 
-  const list = Array.isArray(data) ? data : data.data || data.Data || [];
-
-  airlines.value = list
-    .map((item) => ({
-      code:
-        item.Code ||
-        item.code ||
-        item.AirlineCode ||
-        item.airlineCode ||
-        item.IATACode ||
-        "",
-      name:
-        item.Name ||
-        item.name ||
-        item.AirlineName ||
-        item.airlineName ||
-        item.DisplayName ||
-        "",
-    }))
-    .filter((x) => x.code && x.name);
-}
-
-function filterAirlines() {
-  open.value = true;
-}
-
-function selectAirline(airline) {
-  searchText.value = `${airline.code} - ${airline.name}`;
+  if (!airline) return;
 
   emit("update:code", airline.code);
+
   emit("update:name", airline.name);
-
-  open.value = false;
-}
-
-function selectAll() {
-  searchText.value = "All Airlines";
-
-  emit("update:code", "");
-  emit("update:name", "All Airlines");
-
-  open.value = false;
 }
 </script>
+
+<style scoped>
+.airline-select-wrap {
+  width: 100%;
+  position: relative;
+}
+
+.airline-select {
+  width: 100%;
+}
+
+.airline-select :deep(.el-input__wrapper) {
+  min-height: 58px;
+  border-radius: 16px;
+  box-shadow: none !important;
+  border: 1px solid #dbe4f0;
+  background: #fff;
+  padding: 0 16px;
+}
+
+.airline-select :deep(.el-input__inner) {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.airline-option {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 4px 0;
+}
+
+.airline-option strong {
+  min-width: 52px;
+  color: #1677ff;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.airline-option span {
+  color: #1e293b;
+  font-size: 14px;
+  line-height: 1.3;
+}
+</style>
